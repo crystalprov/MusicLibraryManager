@@ -1,0 +1,61 @@
+# POOphonia Test Case - Command File
+# This test case covers adding, removing, playing, and listing music items.
+
+# Adding various items
+ADD song,1,Imagine,1971,John Lennon,Rock,183
+ADD song,2,Bohemian Rhapsody,1975,Queen,Rock,354
+ADD album,3,Thriller,1982,Michael Jackson,Epic Records,9
+ADD album,4,The Dark Side of the Moon,1973,Pink Floyd,Harvest Capitol,10
+ADD podcast,5,Tech Talk,2023,Jane Doe,Technology,42
+ADD podcast,6,Science Weekly,2022,John Smith,Science,24
+
+# Listing all items (Expect: 6 items displayed)
+LIST
+
+# Searching for a specific song by ID (Expect: Imagine by John Lennon)
+SEARCH 1
+
+# Searching for a song that does not exist (Expect: Not found)
+SEARCH 99
+
+# Searching by title and artist (Expect: Bohemian Rhapsody by Queen)
+SEARCH Bohemian Rhapsody by Queen
+
+# Playing the searched song
+PLAY
+
+# Searching by title and artist (Expect: Thriller by Michael Jackson )
+SEARCH Thriller by Michael Jackson
+
+# Playing Bohemian Rhapsody continues...
+PLAY
+
+# Searching by title but wrong artist (Expect: Not found)
+SEARCH Bohemian Rhapsody by The Beatles
+
+# Playing a song by ID (Expect: Playing "Imagine" by John Lennon)
+PLAY 1
+
+# Playing a song by title and artist (Expect: Playing "Bohemian Rhapsody" by Queen)
+PLAY Bohemian Rhapsody by Queen
+
+# Playing a non-existent song (Expect: Not found)
+PLAY Hey Jude by The Beatles
+
+# Removing a song (Expect: Bohemian Rhapsody removed)
+REMOVE 2
+
+# Listing items after removal (Expect: 5 items remaining)
+LIST
+
+# Removing a non-existent item (Expect: No item found)
+REMOVE 99
+
+# Playing an item after removal (Expect: Not found)
+PLAY 2
+
+# Clearing the library before exiting
+CLEAR
+
+# Exit the program
+EXIT

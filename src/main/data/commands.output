@@ -1,0 +1,49 @@
+***** POOphonia: Welcome! *****
+Library in file POOphonia loaded successfully.
+Sourcing commands...
+Song of 1971 Imagine by John Lennon added to the library successfully.
+Library saved successfully to POOphonia.
+Song of 1975 Bohemian Rhapsody by Queen added to the library successfully.
+Library saved successfully to POOphonia.
+Album Thriller of 1982 with 9 tracks by Michael Jackson added to the library successfully.
+Library saved successfully to POOphonia.
+Album The Dark Side of the Moon of 1973 with 10 tracks by Pink Floyd added to the library successfully.
+Library saved successfully to POOphonia.
+Podcast Tech Talk episode 42 of 2023 on Technology by Jane Doe added to the library successfully.
+Library saved successfully to POOphonia.
+Podcast Science Weekly episode 24 of 2022 on Science by John Smith added to the library successfully.
+Library saved successfully to POOphonia.
+Library:
+Song [ID=1, Title=Imagine, Release Year=1971, Artist=John Lennon, Genre=Rock, Duration=183s]
+Song [ID=2, Title=Bohemian Rhapsody, Release Year=1975, Artist=Queen, Genre=Rock, Duration=354s]
+Album [ID=3, Title=Thriller, Release Year=1982, Artist=Michael Jackson, Tracks=9, Label=Epic Records]
+Album [ID=4, Title=The Dark Side of the Moon, Release Year=1973, Artist=Pink Floyd, Tracks=10, Label=Harvest Capitol]
+Podcast [ID=5, Title=Tech Talk, Release Year=2023, Host=Jane Doe, Episode=42, Topic=Technology]
+Podcast [ID=6, Title=Science Weekly, Release Year=2022, Host=John Smith, Episode=24, Topic=Science]
+Song of 1971 Imagine by John Lennon is ready to PLAY
+SEARCH item ID 99 failed; no such item
+Song of 1975 Bohemian Rhapsody by Queen is ready to PLAY
+Playing Song of 1975 Bohemian Rhapsody by Queen.
+Album [ID=3, Title=Thriller, Release Year=1982, Artist=Michael Jackson, Tracks=9, Label=Epic Records]
+Song of 1975 Bohemian Rhapsody by Queen is already playing.
+SEARCH Bohemian Rhapsody by The Beatles failed; no item found.
+Stopping Song of 1975 Bohemian Rhapsody by Queen.
+Playing Song of 1971 Imagine by John Lennon.
+Stopping Song of 1971 Imagine by John Lennon.
+Playing Song of 1975 Bohemian Rhapsody by Queen.
+PLAY item: Hey Jude by The Beatles failed; no such item.
+Removed Song of 1975 Bohemian Rhapsody by Queen successfully.
+Library saved successfully to POOphonia.
+Library:
+Song [ID=1, Title=Imagine, Release Year=1971, Artist=John Lennon, Genre=Rock, Duration=183s]
+Album [ID=3, Title=Thriller, Release Year=1982, Artist=Michael Jackson, Tracks=9, Label=Epic Records]
+Album [ID=4, Title=The Dark Side of the Moon, Release Year=1973, Artist=Pink Floyd, Tracks=10, Label=Harvest Capitol]
+Podcast [ID=5, Title=Tech Talk, Release Year=2023, Host=Jane Doe, Episode=42, Topic=Technology]
+Podcast [ID=6, Title=Science Weekly, Release Year=2022, Host=John Smith, Episode=24, Topic=Science]
+REMOVE item 99 failed; no such item.
+PLAY item ID 2 failed; no such item.
+Music library has been cleared successfully.
+Library saved successfully to POOphonia.
+Exiting program...
+Library saved successfully to POOphonia.
+***** POOphonia: Goodbye! *****

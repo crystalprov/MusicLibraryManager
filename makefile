@@ -7,7 +7,7 @@ SRC_DIR = src/main/java
 BIN_DIR = target
 MAIN_CLASS = ui.POOphonia
 JAR_NAME = POOphonia.jar
-ARCHIVE_NAME = TP1_Member1_Member2.tar.gz
+ARCHIVE_NAME = TP1_Provencher.tar.gz
 
 # Find all Java files
 SOURCES := $(shell find $(SRC_DIR) -name "*.java")
