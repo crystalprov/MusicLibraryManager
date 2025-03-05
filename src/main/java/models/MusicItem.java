@@ -6,7 +6,7 @@ public abstract class MusicItem {
     private String title;
     private int releaseYear;
     private boolean isPlaying;
-
+    
     // Getters
     public int getId() {return id;}
     public String getTitle() {return title;}

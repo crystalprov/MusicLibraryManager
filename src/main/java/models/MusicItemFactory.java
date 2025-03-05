@@ -39,7 +39,7 @@ public class MusicItemFactory {
 	//   MusicItem type is in parts[0]
         switch( parts[0].toLowerCase() ) {
 	case "song":
-	    return new Song( parts );
+	    return new Song( parts);
 	    
 	case "album":
 	    return new Album( parts );

@@ -8,6 +8,10 @@ public class Main {
         Album test2 = new Album(6, "Short n sweet", 2024, "Sabrina Carpenter", "Island Record", 12);
         Podcast test3 = new Podcast(7, "Anything Goes", 2025, "Emma Chamberlain", "how to stop being a hater", 100);
         
+        
+        String[] newSongTest = {"song", "8", "vampire", "2024", "Olivia Rodrigo", "Pop", "150"};
+        MusicItemFactory.createFromCSV(newSongTest);
+
         // tests
         System.out.println(test1.getInfo());
         System.out.println(test2.getInfo());
