@@ -67,6 +67,9 @@ public class MusicLibraryFileHandler {
 	filePath += libraryName + ".csv"; // Ensure the file is saved in the "data" directory
         List<MusicItem> items = new ArrayList<>();
         File file = new File( filePath );
+        
+    System.out.println("Trying to load file: " + file.getAbsolutePath());
+
 
 	// If the file does not exist, return an empty list and log a message
         if( !file.exists() ) {
@@ -80,7 +83,7 @@ public class MusicLibraryFileHandler {
 	// Attempt to read the music library from the file
         try( BufferedReader reader = new BufferedReader( new FileReader( filePath ) ) ) {
             String line;
-	    int id = 1;
+	    
             while( ( line = reader.readLine() ) != null ) {
                 String[] parts = line.split( "," ); // Split CSV line into fields
 		MusicItem item = MusicItemFactory.createFromCSV( parts ); // Convert CSV data to a MusicItem
