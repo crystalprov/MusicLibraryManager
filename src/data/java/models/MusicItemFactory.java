@@ -29,6 +29,10 @@ public class MusicItemFactory {
      * @return a MusicItem instance (Song, Album, or Podcast) if valid, otherwise null.
      */
     public static MusicItem createFromCSV( String[] parts ) {
+    // Variables declaration
+        int id = Integer.parseInt(parts[1]); 
+        String title = parts[2]; 
+        int releaseYear = Integer.parseInt(parts[3]);
 	/**
 	 * Each music item type (song, album, podcast) requires exactly **7 fields** in the CSV format.
 	 * If fewer than 7 fields are provided, the data is incomplete, and we return null.
@@ -39,13 +43,13 @@ public class MusicItemFactory {
 	//   MusicItem type is in parts[0]
         switch( parts[0].toLowerCase() ) {
 	case "song":
-	    return new Song( parts);
+	    return new Song( id, title, releaseYear, parts[4], parts[5], Integer.parseInt(parts[6]));
 	    
 	case "album":
-	    return new Album( parts );
+	    return new Album( id, title, releaseYear, parts[4], parts[5], Integer.parseInt(parts[6]) );
 	    
 	case "podcast":
-	    return new Podcast( parts );
+	    return new Podcast( id, title, releaseYear, parts[4], parts[5], Integer.parseInt(parts[6]));
 	    
 	default: return null; // if the type is not recognized, return null
         }

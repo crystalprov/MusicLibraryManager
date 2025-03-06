@@ -1,10 +1,11 @@
 package services;
 import java.util.ArrayList;
-
 import models.MusicItem;
-import ui.POOphonia;
+// import ui.POOphonia;
 public class MusicLibrary {
+    // Field
     private MusicItem currentlyPlaying;
+
     // Initialisation liste
     private ArrayList<MusicItem> items;
 
@@ -17,8 +18,8 @@ public class MusicLibrary {
     public void setCurrentlyPlaying(MusicItem currentlyPlaying){this.currentlyPlaying = currentlyPlaying;}
 
     // Constructor 
-    public MusicLibrary(ArrayList<MusicItem> items){
-        this.items = items;
+    public MusicLibrary() {
+        this.items = new ArrayList<>();
     }
 
     // Method to search a MusicItem with the id.
@@ -43,7 +44,9 @@ public class MusicLibrary {
 
     // Lister les éléments de musique présents dans la librairie.
     public void listAllItems(){
-        System.out.println(items); 
+        for (MusicItem item : items) {
+            System.out.println(item);
+        }
     }
 
     // jouer l'élément musical id
@@ -59,10 +62,9 @@ public class MusicLibrary {
             System.out.println("Lecture of " + item.getTitle());
         } else {
             System.out.println("The ID " + id + " is not associed with any items.");
-        } 
-
-        
+        }     
     }
+
     public void pauseItem(){
         // Mettre sur pause 
         if (currentlyPlaying != null) {
@@ -75,11 +77,22 @@ public class MusicLibrary {
     }
 
     public void stopItem( ){
-        // Arreter l'élément musical qui joue
-    }   // Not keeping the item in memory to play later.
-    
+        if (currentlyPlaying != null) {
+            System.out.println("Stopping " + currentlyPlaying.getTitle());
+
+        } else {
+            System.out.println("No element is playing right now.");
+        }
+        
+    }  
+
     public void clearAllItems(){
-        // Vider la liste des élém musicaux présent dans la librairie.
+        if (items.size() > 0){
+            System.out.println("Deleting " + items.size() + " elements in library.");
+            items.clear();
+        } else {
+            System.out.println("No element in library.");
+        }
     }
 
 }

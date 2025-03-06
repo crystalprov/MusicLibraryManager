@@ -1,5 +1,6 @@
 package models;
 
+
 public class Main {
     public static void main(String[] args) {
 
@@ -10,12 +11,13 @@ public class Main {
         
         
         String[] newSongTest = {"song", "8", "vampire", "2024", "Olivia Rodrigo", "Pop", "150"};
-        MusicItemFactory.createFromCSV(newSongTest);
+        System.out.println(MusicItemFactory.createFromCSV(newSongTest));
 
-        // tests
+        // tests MusicItems
         System.out.println(test1.getInfo());
         System.out.println(test2.getInfo());
         System.out.println(test3.getInfo());
+        
         
             
     }

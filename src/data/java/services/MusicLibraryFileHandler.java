@@ -1,5 +1,4 @@
 package services;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -94,5 +93,6 @@ public class MusicLibraryFileHandler {
             Message.send( "Error loading library: " + e.getMessage() );
         }
         return items;
+
     }
 }
