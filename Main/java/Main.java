@@ -4,6 +4,7 @@ import models.MusicItem;
 import models.MusicItemFactory;
 import models.Podcast;
 import models.Song;
+import services.CommandProcessor;
 import services.MusicLibrary;
 import services.MusicLibraryFileHandler;
 
@@ -41,6 +42,21 @@ public class Main {
         // List all items in the library
         System.out.println("Contenu final _____________");
         musicLibrary.listAllItems();
-       
+
+        // Test commandprocessor 
+        System.out.println("----------COMMAND PROCESS----------");
+        CommandProcessor processor = new CommandProcessor();
+        processor.readCommands("data/commands.txt");
+
+        // Test commandprocessor
+        System.out.println(" ---- COMMANDS TESTING ---- ");
+         // ✅ Initialiser la bibliothèque musicale
+         MusicLibrary library = new MusicLibrary();
+
+         // ✅ Traiter les commandes depuis le fichier "data/commands.txt"
+         CommandProcessor.processCommands(library); // ✅ Plus besoin de créer un objet !
+ 
+         // ✅ Sauvegarder la bibliothèque avant de quitter
+         library.save("");
     }
 }

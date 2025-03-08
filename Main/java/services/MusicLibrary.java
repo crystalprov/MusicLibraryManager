@@ -1,4 +1,6 @@
 package services;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import models.MusicItem;
 // import ui.POOphonia;
@@ -66,7 +68,6 @@ public class MusicLibrary {
     }
 
     public void pauseItem(){
-        // Mettre sur pause 
         if (currentlyPlaying != null) {
             System.out.println("Pausing " + currentlyPlaying.getTitle());
             currentlyPlaying.pause();  // keeping the item in memory to replay later
@@ -94,6 +95,25 @@ public class MusicLibrary {
             System.out.println("No element in library.");
         }
     }
+
+    public void save(String filename) {
+        if (filename.isEmpty()) {
+            filename = "POOphonia.csv";
+        }
+        try (FileWriter writer = new FileWriter("POOphonia.csv")) {
+            for (MusicItem item : getItems()) { 
+                writer.write(item.toCSV() + "\n"); 
+            }
+            System.out.println("Library saved in POOphonia.csv.");
+        } catch (IOException e) {
+            System.out.println("Saving error: " + e.getMessage());
+        }
+    }
+    public void save() {
+        save("data/POOphonia.csv");
+    }
+
+    
 
 }
 
