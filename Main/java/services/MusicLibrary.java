@@ -104,7 +104,7 @@ public class MusicLibrary {
             for (MusicItem item : getItems()) { 
                 writer.write(item.toCSV() + "\n"); 
             }
-            System.out.println("Library saved in POOphonia.csv.");
+            System.out.println("Library saved successfully to POOphonia.");
         } catch (IOException e) {
             System.out.println("Saving error: " + e.getMessage());
         }

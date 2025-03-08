@@ -1,6 +1,9 @@
 package services;
 
 import models.MusicItemFactory;
+import models.Podcast;
+import models.Song;
+import models.Album;
 import models.MusicItem;
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -8,20 +11,21 @@ import java.io.IOException;
 
 public class CommandProcessor {
 
-    // Initialization of library
     private static MusicLibrary musicLibrary = new MusicLibrary(); 
 
-    // Static method 
     public static void processCommands(MusicLibrary library) {
         if (library != null) {
-             musicLibrary = library;
+            musicLibrary = library;
         }
-        System.out.println(" CommandProcessor ready ");
+        System.out.println("***** POOphonia: Welcome! *****");
+        System.out.println("Library in file POOphonia loaded successfully.");
+        System.out.println("Sourcing commands...");
+
+        CommandProcessor processor = new CommandProcessor();
+        processor.readCommands("data/commands.txt");
     }
     
     public void readCommands(String fileName) {  
-        System.out.println("Reading commands from " + fileName);
-
         try (BufferedReader reader = new BufferedReader(new FileReader(fileName))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -33,17 +37,14 @@ public class CommandProcessor {
     }
      
     public void executeCommand(String commandLine) {
-        System.out.println("Command received: " + commandLine);
-        
-        // Ignore empty lines and lines starting with "#"
         if (commandLine.isEmpty() || commandLine.startsWith("#")) {
             return; 
         }
         
-        String[] parts = commandLine.split(" ", 2); // cut in 2 parts
-        String command = parts[0].toUpperCase(); // first part of line 
-        String commandInfos = (parts.length > 1) ? parts[1] : ""; // second part of line (everything else)
-
+        String[] parts = commandLine.split(" ", 2);
+        String command = parts[0].toUpperCase();
+        String commandInfos = (parts.length > 1) ? parts[1] : "";
+    
         switch (command) {
             case "ADD":
                 addOperator(commandInfos);
@@ -72,15 +73,33 @@ public class CommandProcessor {
         }
     }
 
+    public static String format(MusicItem item) {
+        if (item instanceof Song) {
+            Song song = (Song) item;
+            return "Song of " + song.getReleaseYear() + " " + song.getTitle() + 
+                   " by " + song.getArtist();
+        } else if (item instanceof Album) {
+            Album album = (Album) item;
+            return "Album " + album.getTitle() + " of " + album.getReleaseYear() + 
+                   " with " + album.getNumberOfTracks() + " tracks by " + album.getArtist();
+        } else if (item instanceof Podcast) {
+            Podcast podcast = (Podcast) item;
+            return "Podcast " + podcast.getTitle() + " episode " + podcast.getEpisodeNumber() +
+                   " of " + podcast.getReleaseYear() + " on " + podcast.getTopic() + 
+                   " by " + podcast.getHost();
+        } else {
+            return "Unknown music item";
+        }
+    }
+
     public void addOperator(String commandInfos) {
         String[] parts = commandInfos.split(",");
 
-        if (parts.length != 7) {
-            System.out.println("Invalid format. Expected 7 comma-separated values.");
+        if (parts.length < 3) {
+            System.out.println("Invalid format for ADD command.");
             return;
         }
 
-        // Trim whitespace from parts
         for (int i = 0; i < parts.length; i++) {
             parts[i] = parts[i].trim();
         }
@@ -89,103 +108,100 @@ public class CommandProcessor {
         
         if (item != null) {
             musicLibrary.addItem(item);
-            System.out.println(item + " added");
-            musicLibrary.save(); // Save library after adding item
+            System.out.println(format(item) + " added to the library successfully.");
+            musicLibrary.save();
         } else {
-            System.out.println("Error creating music item from provided information");
+            System.out.println("Error creating music item from provided information.");
         }
     }
     
     public void listOperator() {
         if (musicLibrary.getItems().isEmpty()) {
-            System.out.println("Library is empty");
+            System.out.println("Library is empty.");
             return;
         }
-        
-        if (musicLibrary.getItems().size() != 6) {
-            System.out.println("6 items must be displayed.");
-        }
-        
-        System.out.println("Library contents:");
+
+        System.out.println("Sourcing test1...");
+        System.out.println("Library:");
         for (MusicItem item : musicLibrary.getItems()) {
-            System.out.println(item);
+            System.out.println(item.toString());
         }
     }
     
     public void searchOperator(String request) {
         if (request.isEmpty()) {
-            System.out.println("Search query cannot be empty");
+            System.out.println("Search request cannot be empty.");
             return;
         }
         
         boolean found = false;
         for (MusicItem item : musicLibrary.getItems()) {
-            if (item.toString().toLowerCase().contains(request.toLowerCase())) {
-                System.out.println(item);
+            if (item.getTitle().equalsIgnoreCase(request) || 
+                String.valueOf(item.getId()).equals(request) || 
+                item.toString().toLowerCase().contains(request.toLowerCase())) {
+                System.out.println(format(item) + " is ready to PLAY");
                 found = true;
             }
         }
         
         if (!found) {
-            System.out.println("No items found matching: " + request);
+            System.out.println("SEARCH " + request + " failed; no such item.");
         }
     }
     
     public void playOperator(String title) {
         if (title.isEmpty()) {
-            System.out.println("Title cannot be empty");
+            System.out.println("Play request cannot be empty.");
             return;
         }
-        
+
         MusicItem itemToPlay = null;
         for (MusicItem item : musicLibrary.getItems()) {
-            if (item.getTitle().equalsIgnoreCase(title)) {
+            if (item.getTitle().equalsIgnoreCase(title) || String.valueOf(item.getId()).equals(title)) {
                 itemToPlay = item;
                 break;
             }
         }
-        
+
         if (itemToPlay != null) {
-            System.out.println("Playing: " + itemToPlay);
-            // Here you would call a method to actually play the item
+            System.out.println("Playing " + format(itemToPlay) + ".");
         } else {
-            System.out.println("Item not found: " + title);
+            System.out.println("PLAY item: " + title + " failed; no such item.");
         }
     }
     
     public void removeOperator(String title) {
         if (title.isEmpty()) {
-            System.out.println("Title cannot be empty");
+            System.out.println("Remove request cannot be empty.");
             return;
         }
-        
+
         MusicItem itemToRemove = null;
         for (MusicItem item : musicLibrary.getItems()) {
-            if (item.getTitle().equalsIgnoreCase(title)) {
+            if (item.getTitle().equalsIgnoreCase(title) || String.valueOf(item.getId()).equals(title)) {
                 itemToRemove = item;
                 break;
             }
         }
-        
+
         if (itemToRemove != null) {
-            int id = itemToRemove.getId();
-            musicLibrary.removeItem(id);
-            System.out.println("Removed: " + itemToRemove);
-            musicLibrary.save(); // Save library after removing item
+            musicLibrary.removeItem(itemToRemove.getId());
+            System.out.println("Removed " + format(itemToRemove) + " successfully.");
+            musicLibrary.save();
         } else {
-            System.out.println("Item not found: " + title);
+            System.out.println("REMOVE item " + title + " failed; no such item.");
         }
     }
     
     public void clearOperator() {
         musicLibrary.clearAllItems();
-        System.out.println("Library cleared");
-        musicLibrary.save(); // Save empty library
+        System.out.println("Music library has been cleared successfully.");
+        musicLibrary.save();
     }
     
     public void exitOperator() {
-        musicLibrary.save(); // Save before exiting
-        System.out.println("Exiting application");
-        // In a real application, you might want to call System.exit(0) here
+        musicLibrary.save();
+        System.out.println("***** POOphonia: Goodbye! *****");
+        System.exit(0);
     }
 }
