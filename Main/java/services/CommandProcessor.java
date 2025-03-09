@@ -11,13 +11,13 @@ import java.io.IOException;
 
 public class CommandProcessor {
 
-    private static MusicLibrary musicLibrary = new MusicLibrary(); 
+    private static MusicLibrary musicLibrary = new MusicLibrary();
+
 
     public static void processCommands(MusicLibrary library) {
         if (library != null) {
             musicLibrary = library;
         }
-        System.out.println("***** POOphonia: Welcome! *****");
         System.out.println("Library in file POOphonia loaded successfully.");
         System.out.println("Sourcing commands...");
 
@@ -94,95 +94,169 @@ public class CommandProcessor {
 
     public void addOperator(String commandInfos) {
         String[] parts = commandInfos.split(",");
-
-        if (parts.length < 3) {
-            System.out.println("Invalid format for ADD command.");
+    
+        // Check if command has at least 7 parts
+        if (parts.length < 7) {
+            System.out.println("Invalid ADD command: " + commandInfos);
             return;
         }
-
+    
+        // Spaces handling
         for (int i = 0; i < parts.length; i++) {
             parts[i] = parts[i].trim();
         }
-
+    
+        // Create item
         MusicItem item = MusicItemFactory.createFromCSV(parts);
         
-        if (item != null) {
-            musicLibrary.addItem(item);
-            System.out.println(format(item) + " added to the library successfully.");
-            musicLibrary.save();
-        } else {
+        if (item == null) {
             System.out.println("Error creating music item from provided information.");
+            return;
         }
-    }
+        
+        // Checking if ID is valid and unique
+        if (item.getId() <= 0) {
+            System.out.println("Invalid music ID: " + item.getId());
+            return;
+        }
+        if (musicLibrary.searchByArtistandTitle(String.valueOf(item.getId())) != null) {
+            System.out.println("ADD item failed; ID already used.");
+            return;
+        }
     
+        // Release year validation
+        if (item.getReleaseYear() < 1850 || item.getReleaseYear() > 2025) {
+            System.out.println("Invalid release year: " + item.getReleaseYear());
+            return;
+        }
+    
+        // Check if items are valid
+        if (item instanceof Song) {
+            Song song = (Song) item;
+            if (song.getDuration() < 1 || song.getDuration() > 36000) {
+                System.out.println("Invalid duration: " + song.getDuration());
+                return;
+            }
+        } else if (item instanceof Album) {
+            Album album = (Album) item;
+            if (album.getNumberOfTracks() < 1 || album.getNumberOfTracks() > 100) {
+                System.out.println("Invalid number of tracks: " + album.getNumberOfTracks());
+                return;
+            }
+        } else if (item instanceof Podcast) {
+            Podcast podcast = (Podcast) item;
+            if (podcast.getEpisodeNumber() < 1 || podcast.getEpisodeNumber() > 500) {
+                System.out.println("Invalid episode number: " + podcast.getEpisodeNumber());
+                return;
+            }
+        }
+    
+        // Checking if same title
+        for (MusicItem existingItem : musicLibrary.getItems()) {
+            if (existingItem.getTitle().equalsIgnoreCase(item.getTitle())) {
+                System.out.println("ADD item failed; item already in library.");
+                return;
+            }
+        }
+    
+        // ADDING item
+        musicLibrary.addItem(item);
+        System.out.println(format(item) + " added to the library successfully.");
+        musicLibrary.save();
+    }
+
     public void listOperator() {
         if (musicLibrary.getItems().isEmpty()) {
             System.out.println("Library is empty.");
             return;
         }
 
-        System.out.println("Sourcing test1...");
+        
         System.out.println("Library:");
         for (MusicItem item : musicLibrary.getItems()) {
             System.out.println(item.toString());
         }
     }
-    
+
     public void searchOperator(String request) {
-        if (request.isEmpty()) {
-            System.out.println("Search request cannot be empty.");
+
+        if (request == null || request.trim().isEmpty()) {
+            System.out.println("Invalid SEARCH command: " + request);
             return;
         }
         
-        boolean found = false;
-        for (MusicItem item : musicLibrary.getItems()) {
-            if (item.getTitle().equalsIgnoreCase(request) || 
-                String.valueOf(item.getId()).equals(request) || 
-                item.toString().toLowerCase().contains(request.toLowerCase())) {
-                System.out.println(format(item) + " is ready to PLAY");
-                found = true;
-            }
-        }
+        MusicItem foundItem;
+        request = request.trim();
         
-        if (!found) {
-            System.out.println("SEARCH " + request + " failed; no such item.");
+
+        // if number, search by ID
+        if (request.matches("\\d+")) {
+            int requestInt = Integer.parseInt(request);
+            foundItem = musicLibrary.searchById(requestInt);            
+        } else {
+            // Search by artist / title
+            foundItem = musicLibrary.searchByArtistandTitle(request);
+            System.out.println("DEBUG " + request);
         }
-    }
-    
+
+        if (foundItem != null) {
+            System.out.println(format(foundItem) + " is ready to PLAY");
+        } else {
+            System.out.println("SEARCH item ID " + request + " failed; no such item.");
+        }
+    } 
+ 
     public void playOperator(String title) {
-        if (title.isEmpty()) {
-            System.out.println("Play request cannot be empty.");
+        if (title == null || title.trim().isEmpty()) {
+            System.out.println("Invalid PLAY command: " + title);
             return;
         }
 
+        title = title.trim();
         MusicItem itemToPlay = null;
-        for (MusicItem item : musicLibrary.getItems()) {
-            if (item.getTitle().equalsIgnoreCase(title) || String.valueOf(item.getId()).equals(title)) {
-                itemToPlay = item;
-                break;
-            }
+
+        // Search by id if number
+        if (title.matches("\\d+")) {
+            itemToPlay = musicLibrary.searchById(Integer.parseInt(title));
+        } else {
+            // Search by artist / title
+            itemToPlay = musicLibrary.searchByArtistandTitle(title);
         }
 
+        // check if item has been found
         if (itemToPlay != null) {
-            System.out.println("Playing " + format(itemToPlay) + ".");
+            if (musicLibrary.getCurrentlyPlaying() != null && musicLibrary.getCurrentlyPlaying().equals(itemToPlay)) {
+                System.out.println(format(itemToPlay) + " is already playing.");
+            } else {
+                if (musicLibrary.getCurrentlyPlaying() != null) {
+                    System.out.println("Stopping " + musicLibrary.getCurrentlyPlaying().getTitle() + ".");
+                    musicLibrary.getCurrentlyPlaying().stop();
+                }
+                itemToPlay.play();
+                musicLibrary.setCurrentlyPlaying(itemToPlay);
+                System.out.println("Playing " + format(itemToPlay) + ".");
+            }
         } else {
             System.out.println("PLAY item: " + title + " failed; no such item.");
         }
     }
     
     public void removeOperator(String title) {
-        if (title.isEmpty()) {
-            System.out.println("Remove request cannot be empty.");
+        if (title == null || title.isEmpty()) {
+            System.out.println("Invalid REMOVE command: " + title);
             return;
         }
 
+        title = title.trim();
         MusicItem itemToRemove = null;
-        for (MusicItem item : musicLibrary.getItems()) {
-            if (item.getTitle().equalsIgnoreCase(title) || String.valueOf(item.getId()).equals(title)) {
-                itemToRemove = item;
-                break;
-            }
-        }
+
+        // Search by id if number
+        if (title.matches("\\d+")) {  
+            itemToRemove = musicLibrary.searchById(Integer.parseInt(title));
+        } else {
+            // Search by artist / title
+            itemToRemove = musicLibrary.searchByArtistandTitle(title);
+        }   
 
         if (itemToRemove != null) {
             musicLibrary.removeItem(itemToRemove.getId());
@@ -196,12 +270,10 @@ public class CommandProcessor {
     public void clearOperator() {
         musicLibrary.clearAllItems();
         System.out.println("Music library has been cleared successfully.");
-        musicLibrary.save();
     }
     
     public void exitOperator() {
         musicLibrary.save();
-        System.out.println("***** POOphonia: Goodbye! *****");
-        System.exit(0);
+        System.out.println("Exiting program...");
     }
 }

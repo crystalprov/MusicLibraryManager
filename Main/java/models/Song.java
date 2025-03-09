@@ -27,7 +27,7 @@ public class Song extends MusicItem {
     // METHODES A IMPLÉMENTÉ OBLIGATOIREMENT
     @Override
     public String getInfo() {
-        return getId() + ". Song - Title: " + getTitle() + " (" + getReleaseYear() + ")," + " Artist: " + artist + ", Genre: " + genre + ", " + duration + " seconds";
+        return "Song [ID=" + getId() + ", Title=" + getTitle() + ", Release Year=" + getReleaseYear() + ", Artist=" + artist + ", Genre=" + genre + ", Duration=" + duration + "s]";
     }
     @Override
     public String toCSV() {

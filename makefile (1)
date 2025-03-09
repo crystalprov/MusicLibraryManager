@@ -1,0 +1,58 @@
+# Compiler
+JAVAC = javac
+JAVA = java
+
+# Directories
+SRC_DIR = src/main/java
+BIN_DIR = target
+MAIN_CLASS = ui.POOphonia
+JAR_NAME = POOphonia.jar
+ARCHIVE_NAME = TP1_Barzani_Wurzinger.tar.gz
+
+# Find all Java files
+SOURCES := $(wildcard $(SRC_DIR)/**/*.java)
+CLASSES := $(SOURCES:$(SRC_DIR)/%.java=$(BIN_DIR)/%.class)
+
+# Default target: Compile everything
+all: compile
+
+# Compile all Java files
+compile:
+    @if not exist $(BIN_DIR) mkdir $(BIN_DIR)
+    @echo Compiling...
+    @$(JAVAC) -d $(BIN_DIR) $(SOURCES)
+    @echo Compilation finished
+
+# Run the application
+run: compile
+    @echo JAVA running
+    @$(JAVA) -cp $(BIN_DIR) $(MAIN_CLASS)
+
+# Create an executable JAR
+jar: compile
+    @echo "Packaging $(JAR_NAME)..."
+    @if not exist $(BIN_DIR) mkdir $(BIN_DIR)
+    @echo Creating jar files...
+    @jar cfe $(BIN_DIR)/$(JAR_NAME) $(MAIN_CLASS) -C $(BIN_DIR) .
+    @echo jar files created
+
+# Clean compiled files
+clean:
+    @if exist "$(BIN_DIR)" rmdir /s /q "$(BIN_DIR)" 
+    @echo Directory "$(BIN_DIR)" cleared
+
+# Archive only .java files while preserving the directory structure
+archive:
+    @echo "Archiving Java source files into $(ARCHIVE_NAME)..."
+    @tar -czf $(ARCHIVE_NAME) $(SOURCES)
+    @echo "tar archive created"
+
+# Help command
+help:
+    @echo "Available commands:"
+    @echo "  make compile  - Compile the Java files"
+    @echo "  make run      - Run the application"
+    @echo "  make jar      - Create an executable JAR file"
+    @echo "  make clean    - Remove compiled files"
+    @echo "  make archive  - Archive the Java source files into a .tar.gz file"
+    @echo "  make help     - Show available commands"

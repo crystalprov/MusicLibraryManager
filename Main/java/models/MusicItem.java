@@ -24,7 +24,7 @@ public abstract class MusicItem {
         this.id = id;
         this.title = title;
         this.releaseYear = releaseYear;
-        this.isPlaying = false; // ???
+        this.isPlaying = false; 
     }
     // Methods 
     public void play() {

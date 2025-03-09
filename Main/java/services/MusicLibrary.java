@@ -2,7 +2,13 @@ package services;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
+
+import models.Album;
 import models.MusicItem;
+import models.Song;
+
+import java.util.Iterator;
+
 // import ui.POOphonia;
 public class MusicLibrary {
     // Field
@@ -24,13 +30,38 @@ public class MusicLibrary {
         this.items = new ArrayList<>();
     }
 
-    // Method to search a MusicItem with the id.
-    public MusicItem searchById(int id) { 
-        for (MusicItem item : items){
-            if (item.getId() == id) {
+    public MusicItem searchByArtistandTitle(String idString) { 
+        idString = idString.trim();
+        System.out.println("DEBUG : " + idString);
+        // Check if only numbers 
+        if (idString.matches("\\d+")) { 
+            int id = Integer.parseInt(idString); 
+            return searchById(id);
+            } 
+
+        // If not an id : search by artist and title.
+        for (MusicItem item : items) {
+            if (item.getTitle().equalsIgnoreCase(idString)) {
+                return item;  
+            } 
+            if (item instanceof Song && ((Song) item).getArtist().equalsIgnoreCase(idString)) {
+                return item;  
+            }
+            if (item instanceof Album && ((Album) item).getArtist().equalsIgnoreCase(idString)) {                
                 return item; 
             }
+            
         }
+        return null; // No item found
+    }
+
+    public MusicItem searchById(int id) {   
+        for (MusicItem item : items) {
+            
+            if (item.getId() == id) {
+                return item;      
+            }
+        } 
         return null;
     }
 
@@ -39,60 +70,81 @@ public class MusicLibrary {
         items.add(item); 
     }
 
-    // Retirer des éléments de musique présents dans la librairie.
+   
     public void removeItem(int id){
-        items.remove(id); 
-    }
+        Iterator<MusicItem> iterator = items.iterator();
+    
+        while (iterator.hasNext()) {
 
-    // Lister les éléments de musique présents dans la librairie.
+            MusicItem item = iterator.next();
+        
+            if (item.getId() == id) {
+                iterator.remove();
+                // Can't play a removed item.
+                if (getCurrentlyPlaying() != null && getCurrentlyPlaying().getId() == id) {
+                    setCurrentlyPlaying(null);
+    
+                }
+
+            return;
+        }
+    }
+    
+        System.out.println("REMOVE item ID " + id + " failed; no such item.");
+    }
+    
     public void listAllItems(){
         for (MusicItem item : items) {
             System.out.println(item);
         }
     }
 
-    // jouer l'élément musical id
     public void playItem(int id){
         MusicItem item = searchById(id);
+
         if (item != null) {
+            // Checking if a song is already playing to stop it 
             if (currentlyPlaying != null){
                 System.out.println("Stopping " + currentlyPlaying.getTitle());
                 currentlyPlaying.stop();
             }
             item.play();  // play item with ID given.
             currentlyPlaying = item;
-            System.out.println("Lecture of " + item.getTitle());
+            System.out.println("Playing> " + CommandProcessor.format(item) + ".");
         } else {
-            System.out.println("The ID " + id + " is not associed with any items.");
+            System.out.println("PLAY item ID " + id + " failed; no such item.");
         }     
     }
 
     public void pauseItem(){
         if (currentlyPlaying != null) {
-            System.out.println("Pausing " + currentlyPlaying.getTitle());
-            currentlyPlaying.pause();  // keeping the item in memory to replay later
-
+            if (!currentlyPlaying.getIsPlaying()) {
+                System.out.println(CommandProcessor.format(currentlyPlaying) + " is already on pause.");
+            } else {
+                System.out.println("Pausing " + currentlyPlaying.getTitle() + ".");
+                currentlyPlaying.pause();  
+            }
         } else {
-            System.out.println("No element is playing right now.");
+            System.out.println("No item to PAUSE.");
         }
     }
 
     public void stopItem( ){
         if (currentlyPlaying != null) {
-            System.out.println("Stopping " + currentlyPlaying.getTitle());
-
+            System.out.println("Stopping " + currentlyPlaying.getTitle() + ".");
+            currentlyPlaying.stop();
+            currentlyPlaying = null; // Not keeping in memory after stopping
         } else {
-            System.out.println("No element is playing right now.");
+            System.out.println("No item to STOP.");
         }
-        
-    }  
+    }
 
     public void clearAllItems(){
-        if (items.size() > 0){
-            System.out.println("Deleting " + items.size() + " elements in library.");
+        if (!items.isEmpty()) {
             items.clear();
+            currentlyPlaying = null; // Stop lecture after clearing.
         } else {
-            System.out.println("No element in library.");
+            System.out.println("Music library is already empty.");
         }
     }
 

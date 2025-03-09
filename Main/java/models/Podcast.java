@@ -29,9 +29,9 @@ public class Podcast extends MusicItem {
     // A IMPLÉMENTÉ OBLIGATOIREMENT 
     @Override
     public String getInfo() {
-        return getId() + ". Podcast - Title: " + getTitle() + " (" + getReleaseYear() + ")," + " Host: " + host + ", Topic: " + topic + ", #" + episodeNumber;
+        return "Podcast [ID=" + getId() + ", Title=" + getTitle() + ", Release Year=" + getReleaseYear() + ", Host=" + host + ", Episode=" + getEpisodeNumber() + ", Topic=" + topic + "]";
     }
-    // podcast,3,Tech Talk,2023,Jane Doe,AI,42
+   
     @Override
     public String toCSV() {
         return "podcast," + getId() + "," + getTitle() + "," + getReleaseYear() + "," + host + "," + topic + "," + episodeNumber ;

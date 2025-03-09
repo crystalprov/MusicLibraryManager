@@ -30,7 +30,7 @@ public class Album extends MusicItem {
 
     @Override
     public String getInfo() {
-        return getId() + ". Album - Title: " + getTitle() + " (" + getReleaseYear() + ")," + " Artist: " + artist + ", Label: " + label + ", " + numberOfTracks + " tracks";
+        return "Album [ID=" + getId() + ", Title=" + getTitle() + ", Release Year=" + getReleaseYear() + ", Artist=" + artist + ", Tracks=" + getNumberOfTracks() + ", Label=" + label + "]";
     }
     // album,2,Thriller,1982,Michael Jackson,Epic Records,9
     public String toCSV() {
