@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import models.Album;
 import models.MusicItem;
 import models.Song;
-
+import ui.Message;
 import java.util.Iterator;
 
 // import ui.POOphonia;
@@ -32,7 +32,7 @@ public class MusicLibrary {
 
     public MusicItem searchByArtistandTitle(String idString) { 
         idString = idString.trim();
-        System.out.println("DEBUG : " + idString);
+        
         // Check if only numbers 
         if (idString.matches("\\d+")) { 
             int id = Integer.parseInt(idString); 
@@ -90,12 +90,12 @@ public class MusicLibrary {
         }
     }
     
-        System.out.println("REMOVE item ID " + id + " failed; no such item.");
+        Message.send("REMOVE item ID " + id + " failed; no such item.");
     }
     
     public void listAllItems(){
         for (MusicItem item : items) {
-            System.out.println(item);
+            Message.send(item.toString());
         }
     }
 
@@ -105,38 +105,15 @@ public class MusicLibrary {
         if (item != null) {
             // Checking if a song is already playing to stop it 
             if (currentlyPlaying != null){
-                System.out.println("Stopping " + currentlyPlaying.getTitle());
+                Message.send("Stopping " + currentlyPlaying.getTitle());
                 currentlyPlaying.stop();
             }
             item.play();  // play item with ID given.
             currentlyPlaying = item;
-            System.out.println("Playing> " + CommandProcessor.format(item) + ".");
+            Message.send("Playing> " + CommandProcessor.format(item) + ".");
         } else {
-            System.out.println("PLAY item ID " + id + " failed; no such item.");
+            Message.send("PLAY item ID " + id + " failed; no such item.");
         }     
-    }
-
-    public void pauseItem(){
-        if (currentlyPlaying != null) {
-            if (!currentlyPlaying.getIsPlaying()) {
-                System.out.println(CommandProcessor.format(currentlyPlaying) + " is already on pause.");
-            } else {
-                System.out.println("Pausing " + currentlyPlaying.getTitle() + ".");
-                currentlyPlaying.pause();  
-            }
-        } else {
-            System.out.println("No item to PAUSE.");
-        }
-    }
-
-    public void stopItem( ){
-        if (currentlyPlaying != null) {
-            System.out.println("Stopping " + currentlyPlaying.getTitle() + ".");
-            currentlyPlaying.stop();
-            currentlyPlaying = null; // Not keeping in memory after stopping
-        } else {
-            System.out.println("No item to STOP.");
-        }
     }
 
     public void clearAllItems(){
@@ -144,7 +121,7 @@ public class MusicLibrary {
             items.clear();
             currentlyPlaying = null; // Stop lecture after clearing.
         } else {
-            System.out.println("Music library is already empty.");
+            Message.send("Music library is already empty.");
         }
     }
 
@@ -156,9 +133,9 @@ public class MusicLibrary {
             for (MusicItem item : getItems()) { 
                 writer.write(item.toCSV() + "\n"); 
             }
-            System.out.println("Library saved successfully to POOphonia.");
+            Message.send("Library saved successfully to POOphonia.");
         } catch (IOException e) {
-            System.out.println("Saving error: " + e.getMessage());
+            Message.send("Saving error: " + e.getMessage());
         }
     }
     public void save() {
